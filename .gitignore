@@ -1,0 +1,5 @@
+#Ignore "chess-board" files
+*.chs
+#Ignore the build directory
+##..no need to put binaries in git
+./buid/

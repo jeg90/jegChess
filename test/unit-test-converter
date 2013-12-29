@@ -1,0 +1,30 @@
+#!/usr/bin/python
+
+import sys
+
+if len(sys.argv) != 3:
+  print "Usage: unit-test-converter in-file out-file"
+  sys.exit(0)
+
+input_filename = sys.argv[1]
+output_filename = sys.argv[2]
+
+with open(input_filename) as f:
+  lines = f.readlines()
+
+modded_lines = []
+for line in lines:
+  if "#include <check.h>" in line:
+    line = "#include \"unity.h\"\n"
+  elif "ck_assert_msg(" in line:
+    line = line.replace("ck_assert_msg", "TEST_ASSERT_MESSAGE")
+  elif "START_TEST" in line:
+    no_start_line = line.replace("START_TEST (", "void test_")
+    ceedling_line = no_start_line.replace(")", "()")
+    line = ceedling_line.lower()
+  elif "END_TEST" in line:
+    continue
+  modded_lines.append(line)
+
+with open(output_filename, 'w') as f:
+  f.write("".join(modded_lines))
